@@ -72,6 +72,9 @@ jobs:
           echo "attempting to use $(which snap) to install some wxwidgets-related things..."; \
           sudo snap install wxdatecalc wxdatefrom; \
         fi
+        if test -x "$(which gem)"; then \
+          gem uninstall --all all; \
+        fi
 
     - name: Cache object files
       id: vcpkg-cache
@@ -83,6 +86,7 @@ jobs:
 
     - name: More dependencies
       run: |
+        git gc
         vcpkg update
         vcpkg x-ci-clean
         vcpkg install wxwidgets
@@ -124,7 +128,7 @@ jobs:
         if test -r CMakeFiles/CMakeError.log; then \
           cat CMakeFiles/CMakeError.log || stat CMakeFiles/CMakeError.log; \
         fi
-        (du / 2>/dev/null | sort -n) || df
+        (du / 2>/dev/null | sort -nr) || df
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
