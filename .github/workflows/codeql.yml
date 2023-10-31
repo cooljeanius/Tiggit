@@ -66,7 +66,7 @@ jobs:
     - name: Dependencies
       run: |
         sudo apt-get -qq update
-        sudo apt-get -qq install libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 codeblocks filezilla cmake libzzip-dev mlocate plocate libdbus-1-dev libxi-dev libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil lxrandr openssl curl libharfbuzz-dev pango1.0 xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy libxrandr2 build-essential gcc g++ python3-distutils pkg-config ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev libibus-1.0-dev
+        sudo apt-get -qq install libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil lxrandr openssl curl libharfbuzz-dev pango1.0 xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy libxrandr2 build-essential gcc g++ python3-distutils pkg-config ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev libibus-1.0-dev
         sudo apt-get autoclean && sudo apt-get clean
         if test -x "$(which snap)"; then \
           echo "attempting to use $(which snap) to install some wxwidgets-related things..."; \
@@ -86,7 +86,9 @@ jobs:
         vcpkg update
         vcpkg x-ci-clean
         vcpkg install libxrandr
+        vcpkg x-ci-clean
         vcpkg install wxwidgets
+        vcpkg x-ci-clean
 
     # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
     # If this step fails, then you should remove it and run the build manually (see below)
@@ -114,30 +116,11 @@ jobs:
           echo "Seeing if wxwidgets had a build failure under vcpkg..."; \
           find /usr/local/share/vcpkg/buildtrees/wxwidgets -name "*.log" | xargs cat | uniq; \
         fi
-        if test -x "$(which locate)"; then \
-          echo "attempting to use $(which locate) to look for things..."; \
-          locate wxwidgets 2>/dev/null; \
-          locate xrandr 2>/dev/null; \
-        elif test -x "$(which glocate)"; then \
-          echo "attempting to use $(which glocate) to look for things..."; \
-          glocate wxwidgets 2>/dev/null; \
-          glocate xrandr 2>/dev/null; \
-        elif test -x "$(which mlocate)"; then \
-          echo "attempting to use $(which mlocate) to look for things..."; \
-          mlocate wxwidgets 2>/dev/null; \
-          mlocate xrandr 2>/dev/null; \
-        elif test -x "$(which plocate)"; then \
-          echo "attempting to use $(which plocate) to look for things..."; \
-          plocate wxwidgets 2>/dev/null; \
-          plocate xrandr 2>/dev/null; \
-        elif test -x "$(which mdfind)"; then \
-          echo "attempting to use $(which mdfind) to look for things..."; \
-          mdfind wxwidgets 2>/dev/null; \
-          mdfind xrandr 2>/dev/null; \
-        elif test -x "$(which find)"; then \
-          echo "attempting to use $(which find) to look for things..."; \
-          find / -name wxwidgets 2>/dev/null; \
-          find / -name xrandr 2>/dev/null; \
+        if test -r CMakeFiles/CMakeOutput.log; then \
+          cat CMakeFiles/CMakeOutput.log || stat CMakeFiles/CMakeOutput.log; \
+        fi
+        if test -r CMakeFiles/CMakeError.log; then \
+          cat CMakeFiles/CMakeError.log || stat CMakeFiles/CMakeError.log; \
         fi
         du / 2>/dev/null || df
 
