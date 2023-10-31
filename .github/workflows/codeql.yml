@@ -73,7 +73,15 @@ jobs:
           sudo snap install wxdatecalc wxdatefrom; \
         fi
         if test -x "$(which gem)"; then \
-          gem uninstall --all all; \
+          gem uninstall --all gem; \
+        fi
+        if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
+          brew uninstall all; \
+        fi
+        if test -d /usr/local/lib/android; then \
+          echo "android takes up too much room; removing it..."; \
+          sudo rm -rf /usr/local/lib/android || rmdir /usr/local/lib/android || stat -t /usr/local/lib/android; \
         fi
 
     - name: Cache object files
@@ -121,13 +129,17 @@ jobs:
         if test -d /usr/local/share/vcpkg/buildtrees/wxwidgets; then \
           echo "Seeing if wxwidgets had a build failure under vcpkg..."; \
           find /usr/local/share/vcpkg/buildtrees/wxwidgets -name "*.log" | xargs cat | uniq; \
+          echo "done with wxwidgets logs"; \
         fi
         if test -r CMakeFiles/CMakeOutput.log; then \
+          echo "checking CMake output..."; \
           cat CMakeFiles/CMakeOutput.log || stat CMakeFiles/CMakeOutput.log; \
         fi
         if test -r CMakeFiles/CMakeError.log; then \
+          echo "checking CMake errors..."; \
           cat CMakeFiles/CMakeError.log || stat CMakeFiles/CMakeError.log; \
         fi
+        echo "checking what might be taking up a lot of disk space..."
         (du / 2>/dev/null | sort -nr) || df
 
     - name: Perform CodeQL Analysis
