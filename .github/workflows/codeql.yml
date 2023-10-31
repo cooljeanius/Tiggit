@@ -73,15 +73,19 @@ jobs:
           sudo snap install wxdatecalc wxdatefrom; \
         fi
         if test -x "$(which gem)"; then \
-          gem uninstall --all gem; \
+          gem uninstall --all all || gem uninstall --all gem || gem uninstall --all bundler; \
         fi
         if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
-          brew uninstall all; \
+          brew uninstall all || brew uninstall brew || brew uninstall android || brew uninstall Homebrew || brew cleanup --prune=all -s || rm -rf "$(brew --cache)"; \
         fi
         if test -d /usr/local/lib/android; then \
           echo "android takes up too much room; removing it..."; \
-          sudo rm -rf /usr/local/lib/android || rmdir /usr/local/lib/android || stat -t /usr/local/lib/android; \
+          sudo rm -rf /usr/local/lib/android || sudo rmdir /usr/local/lib/android || stat -t /usr/local/lib/android; \
+        fi
+        if test -d /usr/local/.ghcup; then \
+          echo "ghc takes up too much room; removing it..."; \
+          sudo rm -rf /usr/local/.ghcup || sudo rmdir /usr/local/.ghcup || stat -t /usr/local/.ghcup; \
         fi
 
     - name: Cache object files
