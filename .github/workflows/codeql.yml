@@ -66,18 +66,18 @@ jobs:
     - name: Dependencies
       run: |
         sudo apt-get -qq update
-        sudo apt-get -q install libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil lxrandr openssl curl libharfbuzz-dev pango1.0 xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy libxrandr2 build-essential gcc g++ python3-distutils pkg-config ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev
+        sudo apt-get -q install libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil lxrandr openssl curl libharfbuzz-dev pango1.0 xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy libxrandr2 build-essential gcc g++ python3-distutils pkg-config ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev libboost-dev
         sudo apt-get autoclean && sudo apt-get clean
         if test -x "$(which snap)"; then \
           echo "attempting to use $(which snap) to install some wxwidgets-related things..."; \
           sudo snap install wxdatecalc wxdatefrom; \
         fi
         if test -x "$(which gem)"; then \
-          gem uninstall --all all || gem uninstall --all gem || gem uninstall --all bundler; \
+          gem uninstall --all all 1>&2 || gem uninstall --all gem 1>&2 || gem uninstall --all bundler; \
         fi
         if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
-          brew uninstall all || brew uninstall brew || brew uninstall android || brew uninstall Homebrew || brew cleanup --prune=all -s || rm -rf "$(brew --cache)"; \
+          brew uninstall all || brew uninstall brew || brew uninstall android || brew uninstall Homebrew || brew cleanup --prune=all -s --verbose || rm -rf "$(brew --cache)"; \
         fi
         if test -d /usr/local/lib/android; then \
           echo "android takes up too much room; removing it..."; \
