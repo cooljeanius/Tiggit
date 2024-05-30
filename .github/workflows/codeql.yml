@@ -130,14 +130,20 @@ jobs:
           sync && echo "Seeing if wxwidgets had a build failure under vcpkg..."; \
           find /usr/local/share/vcpkg/buildtrees/wxwidgets -name "*.log" | xargs cat | uniq; \
           sync && echo "done with wxwidgets logs"; \
+        else \
+          sync && echo "skipping check for wxwidgets logs"; \
         fi
         if test -r CMakeFiles/CMakeOutput.log; then \
           sync && echo "checking CMake output..."; \
           cat CMakeFiles/CMakeOutput.log || stat CMakeFiles/CMakeOutput.log; \
+        else \
+          sync && echo "skipping check of CMake output..."; \
         fi
         if test -r CMakeFiles/CMakeError.log; then \
           sync && echo "checking CMake errors..."; \
           cat CMakeFiles/CMakeError.log || stat CMakeFiles/CMakeError.log; \
+        else \
+          sync && echo "skipping check of CMake errors..."; \
         fi
         sync && echo "checking what might be taking up a lot of disk space..."
         df || (du -d 1 -x / 2>/dev/null | sort -nr)
