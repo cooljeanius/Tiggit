@@ -101,12 +101,14 @@ jobs:
         git gc
         vcpkg update
         vcpkg x-ci-clean
-        vcpkg install wxwidgets
+        vcpkg install boost-filesystem
         vcpkg x-ci-clean
       env:
         VCPKG_FORCE_SYSTEM_BINARIES: 1
         CMAKE_BUILD_TYPE: MinSizeRel
         VCPKG_KEEP_ENV_VARS: CMAKE_BUILD_TYPE
+        MAYBE_UNUSED_VARIABLES: CMAKE_DISABLE_FIND_PACKAGE_ALSA
+        VERBOSE: ON
 
     # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
     # If this step fails, then you should remove it and run the build manually (see below)
@@ -114,11 +116,10 @@ jobs:
       uses: github/codeql-action/autobuild@v2
       env:
         VCPKG_FEATURE_FLAGS: dependencygraph
-        CXXFLAGS: "-std=gnu++98"
+        CXXFLAGS: "-std=gnu++11 -fpermissive"
         VERBOSE: ON
 
-    # Command-line programs to run using the OS shell.
-    # See:
+    # Command-line programs to run using the OS shell; see:
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
     - name: Debug failure
@@ -139,7 +140,7 @@ jobs:
           cat CMakeFiles/CMakeError.log || stat CMakeFiles/CMakeError.log; \
         fi
         sync && echo "checking what might be taking up a lot of disk space..."
-        (du -d 1 -x / 2>/dev/null | sort -nr) || df
+        df || (du -d 1 -x / 2>/dev/null | sort -nr)
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
