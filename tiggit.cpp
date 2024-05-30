@@ -7,6 +7,7 @@
 #include <wx/imaglist.h>
 #include <wx/notebook.h>
 
+#include <cstdlib>
 #include <iostream>
 #include <assert.h>
 #include <time.h>
@@ -318,7 +319,11 @@ struct StatusCol : ColumnHandler
     if(g.isWorking())
       return g.getStatus();
 
+#ifdef NDEBUG
+    exit(EXIT_FAILURE);
+#else
     assert(0);
+#endif /* NDEBUG */
   }
 };
 
