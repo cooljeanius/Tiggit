@@ -73,23 +73,33 @@ jobs:
         sudo apt-get -qq install -y libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil lxrandr openssl curl libharfbuzz-dev pango1.0 xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy libxrandr2 build-essential gcc g++ python3-distutils pkg-config ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev libboost-dev libboost-filesystem1.74-dev libc6-dev-amd64-cross libgcc-s1-amd64-cross libtbb-dev
         sudo apt-get autoclean && sudo apt-get clean
         if test -x "$(which snap)"; then \
-          echo "attempting to use $(which snap) to install some wxwidgets-related things..."; \
+          sync && echo "attempting to use $(which snap) to install some wxwidgets-related things..."; \
           sudo snap install wxdatecalc wxdatefrom; \
+        else \
+          sync && echo "skipping attempting to use snap to install anything"; \
         fi
         if test -x "$(which gem)"; then \
           gem uninstall --all all 1>&2 || gem uninstall --all gem 1>&2 || gem uninstall --all bundler; \
+        else \
+          sync && echo "skipping cleaning up after rubygems"; \
         fi
         if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
           brew uninstall all || brew uninstall brew || brew uninstall android || brew uninstall Homebrew || brew cleanup --prune=all -s --verbose || rm -rf "$(brew --cache)"; \
+        else \
+          sync && echo "skipping cleaning up after Homebrew"; \
         fi
         if test -d /usr/local/lib/android; then \
-          echo "android takes up too much room; removing it..."; \
+          sync && echo "android takes up too much room; removing it..."; \
           sudo rm -rf /usr/local/lib/android || sudo rmdir /usr/local/lib/android || stat -t /usr/local/lib/android; \
+        else \
+          sync && echo "skipping cleaning up after android"; \
         fi
         if test -d /usr/local/.ghcup; then \
-          echo "ghc takes up too much room; removing it..."; \
+          sync && echo "ghcup takes up too much room; removing it..."; \
           sudo rm -rf /usr/local/.ghcup || sudo rmdir /usr/local/.ghcup || stat -t /usr/local/.ghcup; \
+        else \
+          echo "skipping cleaning up after ghcup"; \
         fi
 
     - name: Cache object files
@@ -105,7 +115,7 @@ jobs:
         git gc
         vcpkg update
         vcpkg x-ci-clean
-        vcpkg install boost-filesystem || vcpkg install boost vcpkg-boost
+        vcpkg install boost-filesystem || vcpkg install vcpkg-cmake vcpkg-boost
         vcpkg x-ci-clean
       env:
         VCPKG_FORCE_SYSTEM_BINARIES: 1
@@ -158,7 +168,7 @@ jobs:
           sync && echo "skipping check of CMake errors..."; \
         fi
         sync && echo "checking what might be taking up a lot of disk space..."
-        df || (du -d 1 -x / 2>/dev/null | sort -nr)
+        (sync && du . && sync && df) || (du -d 1 -x / 2>/dev/null | sort -nr)
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
