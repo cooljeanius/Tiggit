@@ -14,10 +14,14 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
+      - dependabot/*
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "master" ]
+    branches:
+      - master
+      - dependabot/*
   schedule:
     - cron: '45 11 * * 1'
 
@@ -101,7 +105,7 @@ jobs:
         git gc
         vcpkg update
         vcpkg x-ci-clean
-        vcpkg install boost-filesystem || vcpkg install vcpkg-boost
+        vcpkg install boost-filesystem || vcpkg install boost vcpkg-boost
         vcpkg x-ci-clean
       env:
         VCPKG_FORCE_SYSTEM_BINARIES: 1
@@ -112,10 +116,17 @@ jobs:
 
     # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
     # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
+    - name: Autobuild 1 (gnu++98)
       uses: github/codeql-action/autobuild@v3
       env:
         VCPKG_FEATURE_FLAGS: dependencygraph
+        CXXFLAGS: "-std=gnu++98 -fpermissive"
+        VERBOSE: ON
+        MAKEFLAGS: -ki
+
+    - name: Autobuild 2 (gnu++11)
+      uses: github/codeql-action/autobuild@v3
+      env:
         CXXFLAGS: "-std=gnu++11 -fpermissive"
         VERBOSE: ON
         MAKEFLAGS: -ki
