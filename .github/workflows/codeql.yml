@@ -130,21 +130,21 @@ jobs:
       uses: github/codeql-action/autobuild@v3
       env:
         VCPKG_FEATURE_FLAGS: dependencygraph
-        CXXFLAGS: "-std=gnu++98 -fpermissive"
+        CXXFLAGS: "-std=gnu++98 -fpermissive -Wno-write-strings -Wno-nonnull"
         VERBOSE: ON
         MAKEFLAGS: -ki
 
     - name: Autobuild 2 (gnu++11)
       uses: github/codeql-action/autobuild@v3
       env:
-        CXXFLAGS: "-std=gnu++11 -fpermissive"
+        CXXFLAGS: "-std=gnu++11 -fpermissive -Wno-narrowing -Wno-nonnull"
         VERBOSE: ON
         MAKEFLAGS: -ki
 
     - name: Autobuild 3 (gnu++14)
       uses: github/codeql-action/autobuild@v3
       env:
-        CXXFLAGS: "-std=gnu++14 -fpermissive"
+        CXXFLAGS: "-std=gnu++14 -fpermissive -Wno-pedantic -Wno-nonnull"
         VERBOSE: ON
         MAKEFLAGS: -ki
 
