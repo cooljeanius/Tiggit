@@ -115,7 +115,7 @@ jobs:
         git gc
         vcpkg update
         vcpkg x-ci-clean
-        vcpkg install boost-filesystem || vcpkg install vcpkg-cmake vcpkg-boost
+        vcpkg install boost-filesystem || vcpkg install vcpkg-cmake vcpkg-cmake-config vcpkg-boost
         vcpkg x-ci-clean
       env:
         VCPKG_FORCE_SYSTEM_BINARIES: 1
@@ -138,6 +138,13 @@ jobs:
       uses: github/codeql-action/autobuild@v3
       env:
         CXXFLAGS: "-std=gnu++11 -fpermissive"
+        VERBOSE: ON
+        MAKEFLAGS: -ki
+
+    - name: Autobuild 3 (gnu++14)
+      uses: github/codeql-action/autobuild@v3
+      env:
+        CXXFLAGS: "-std=gnu++14 -fpermissive"
         VERBOSE: ON
         MAKEFLAGS: -ki
 
