@@ -470,7 +470,7 @@ struct TheFrame : public wxFrame
     if(conf.autoPost)
       {
         // Construct the command url
-        string cmd = "http://tiggit.net/api/post_game.php";
+        string cmd = "https://tiggit.net/api/post_game.php";
 
         // Game UNIX name
         cmd += "?game=" + urlencode(s_urlname);

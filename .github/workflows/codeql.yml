@@ -148,10 +148,14 @@ jobs:
         VERBOSE: ON
         MAKEFLAGS: -ki
 
-    - name: Autobuild 4 (clang++)
+    - name: Autobuild 4 (clang, hopefully?)
       uses: github/codeql-action/autobuild@v3
       env:
+        CC: "clang"
         CXX: "clang++"
+        OBJC: "clang"
+        OBJCXX: "clang++"
+        CLICOLOR: "yes"
         VERBOSE: ON
         MAKEFLAGS: -ki
 
