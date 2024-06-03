@@ -90,7 +90,7 @@ jobs:
 
     - name: Cache object files
       id: vcpkg-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: vcpkg_installed  # vcpkg generates this dir next to vcpkg.json
         # the final key part needs to be changed if anything in the build process changes that is not already included here
