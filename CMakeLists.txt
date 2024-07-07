@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
+project(Tiggit)
 
 find_package(Boost COMPONENTS filesystem system thread REQUIRED)
 find_package(CURL REQUIRED)
