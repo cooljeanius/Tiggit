@@ -1,0 +1,9 @@
+[submodule "libs/mangle"]
+	path = libs/mangle
+	url = https://github.com/korslund/mangle
+[submodule "libs/spread"]
+	path = libs/spread
+	url = https://github.com/korslund/spread
+[submodule "libs/unpackcpp"]
+	path = libs/unpackcpp
+	url = https://github.com/korslund/UnpackCpp.git

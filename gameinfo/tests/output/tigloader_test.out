@@ -1,0 +1,48 @@
+
+brainsplode:
+  Title: BrainSplode!
+  Homepage: http://www.richmakegame.com
+  Tags: single-player shooter turn-based puzzle physics
+  Channel: test_channel
+  Rating: -1 (0 votes)
+  Demo: no
+
+brogue:
+  Title: Brogue
+  Homepage: https://sites.google.com/site/broguegame/home
+  Tags: single-player roguelike role-playing adventure
+  Channel: test_channel
+  Rating: -1 (0 votes)
+  Demo: no
+
+moon-invaders:
+  Title: Moon Invaders
+  Homepage: http://hamumu.com/game.php?game=MOON
+  Tags: single-player space-invaders strategy retro
+  Channel: test_channel
+  Rating: -1 (0 votes)
+  Demo: no
+
+aquaria---demo:
+  Title: Aquaria - DEMO
+  Homepage: http://www.bit-blot.com/aquaria/buy.html
+  Tags: adventure action single-player
+  Channel: tiggit.net
+  Rating: 4.37037 (27 votes)
+  Demo: yes
+
+cave-story:
+  Title: Cave Story
+  Homepage: http://www.cavestory.org/
+  Tags: single-player platform adventure action
+  Channel: tiggit.net
+  Rating: 4.62585 (394 votes)
+  Demo: no
+
+dwarf-fortress:
+  Title: Dwarf Fortress
+  Homepage: http://www.bay12games.com/dwarves/
+  Tags: strategy ascii procedural fantasy sandbox real-time single-player
+  Channel: tiggit.net
+  Rating: 4.52705 (227 votes)
+  Demo: no
