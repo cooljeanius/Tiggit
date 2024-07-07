@@ -192,7 +192,7 @@ struct UpdateJob : Job
     try
       {
         std::string promoFile = repo->getPath("promo/index.json");
-        Fetch::fetchIfOlder("http://tiggit.net/client/promo/index.json", promoFile, 120);
+        Fetch::fetchIfOlder("https://tiggit.net/client/promo/index.json", promoFile, 120);
 
         Json::Value val = ReadJson::readJson(promoFile);
 
