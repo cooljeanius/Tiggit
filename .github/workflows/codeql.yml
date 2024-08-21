@@ -76,7 +76,7 @@ jobs:
           # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
           # queries: security-extended,security-and-quality
 
-      - name: Dependencies
+      - name: Dependencies (apt-get, snap)
         run: |
           sudo apt-get -qq update
           sudo apt-get -qq install -y libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 \
@@ -104,7 +104,11 @@ jobs:
           else \
             sync && echo "skipping attempt to use snap to install anything"; \
           fi
+
+      - name: Reclaim disk space by cleaning up unnecessary things
+        run: |
           if test -x "$(which gem)"; then \
+            sync && echo "attempting to clean up after $(which gem)..."; \
             gem uninstall --all all 1>&2 || gem uninstall --all gem 1>&2 || \
               gem uninstall --all bundler; \
           else \
@@ -112,10 +116,11 @@ jobs:
           fi
           if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
-            brew uninstall all || brew uninstall brew || \
-              brew uninstall android || brew uninstall Homebrew || \
-              brew cleanup --prune=all -s --verbose || \
-              rm -rf "$(brew --cache)"; \
+            sync && echo "attempting to clean up after Homebrew..."; \
+            brew uninstall all 2>&1 || brew uninstall brew 2>&1 || \
+              brew uninstall android 2>&1 || brew uninstall Homebrew 2>&1 || \
+              brew cleanup --prune=all -s --verbose 2>&1 || \
+              rm -rf "$(brew --cache)" || echo "no Homebrew stuff to clean"; \
           else \
             sync && echo "skipping cleaning up after Homebrew"; \
           fi
@@ -143,14 +148,19 @@ jobs:
           # the final key part needs to be changed if anything in the build
           # process changes that is not already included here
           key: vcpkg-cache-master-${{ hashFiles('.github/workflows/codeql.yml') }}-${{ hashFiles('CMakeLists.txt') }}-0001
+          restore-keys: |
+            vcpkg-cache-master-${{ hashFiles('.github/workflows/codeql.yml') }}--0001
+            vcpkg-cache-master--${{ hashFiles('CMakeLists.txt') }}-0001
 
-      - name: More dependencies
+      - name: More dependencies (vcpkg)
         run: |
           git gc
           vcpkg update
           vcpkg x-ci-clean
+          sync && echo "vcpkg install command 1 begins here"
           vcpkg install boost-filesystem || vcpkg install vcpkg-cmake \
             vcpkg-cmake-config vcpkg-cmake-get-vars vcpkg-boost
+          sync && echo "vcpkg install command 2 begins here"
           vcpkg install boost-thread || vcpkg install libgit2
           vcpkg x-ci-clean
         env:
@@ -162,7 +172,7 @@ jobs:
 
       # Autobuild attempts to build any compiled languages
       # (C/C++, C#, Go, Java, or Swift).
-      # If this step fails, then you should remove it and run the build manually
+      # If this step fails, then you should remove it & run the build manually
       - name: Autobuild 1 (gnu++98)
         uses: github/codeql-action/autobuild@v3
         env:
