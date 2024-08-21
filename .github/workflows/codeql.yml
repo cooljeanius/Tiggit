@@ -19,7 +19,7 @@ on:
       - master
       - dependabot/*
   pull_request:
-    # The branches below must be a subset of the branches above
+    # The branches below must be a subset of the branches above:
     branches:
       - master
       - dependabot/*
@@ -117,7 +117,7 @@ jobs:
           if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
             sync && echo "attempting to clean up after Homebrew..."; \
-            brew uninstall all 2>&1 || brew uninstall brew 2>&1 || \
+            brew uninstall all 2>/dev/null || brew uninstall brew 2>&1 || \
               brew uninstall android 2>&1 || brew uninstall Homebrew 2>&1 || \
               brew cleanup --prune=all -s --verbose 2>&1 || \
               rm -rf "$(brew --cache)" || echo "no Homebrew stuff to clean"; \
@@ -126,7 +126,7 @@ jobs:
           fi
           if test -d /usr/local/lib/android; then \
             sync && echo "android takes up too much room; removing it..."; \
-            sudo rm -rf /usr/local/lib/android || \
+            time sudo rm -rf /usr/local/lib/android || \
               sudo rmdir /usr/local/lib/android || \
               stat -t /usr/local/lib/android; \
           else \
@@ -144,7 +144,9 @@ jobs:
         id: vcpkg-cache
         uses: actions/cache@v4
         with:
-          path: vcpkg_installed  # vcpkg generates this dir next to vcpkg.json
+          path: |
+            vcpkg_installed
+            **/vcpkg_installed
           # the final key part needs to be changed if anything in the build
           # process changes that is not already included here
           key: vcpkg-cache-master-${{ hashFiles('.github/workflows/codeql.yml') }}-${{ hashFiles('CMakeLists.txt') }}-0001
