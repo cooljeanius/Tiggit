@@ -1,3 +1,4 @@
+---
 # Tiggit/.github/workflows/codeql.yml: GitHub Actions codeql workflow for Tiggit
 # For most projects, this workflow file will not need changing; you simply need
 # to commit it to your repository.
@@ -43,155 +44,186 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'c-cpp' ]
-        # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby' ]
-        # Use only 'java-kotlin' to analyze code written in Java, Kotlin or both
-        # Use only 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
+        language: ['c-cpp']
+        # CodeQL supports the following languages:
+        # 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript',
+        # 'python', 'ruby'
+        # Use 'java-kotlin' to analyze code written in Java, Kotlin, or both
+        # Use 'javascript-typescript' to analyze code written in JavaScript,
+        # TypeScript or both
         # Learn more about CodeQL language support at:
         # https://aka.ms/codeql-docs/language-support
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        submodules: true
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
+      # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # If you wish to specify custom queries, you can do so here or in a
+          # config file.
+          # By default, queries listed here will override any specified in a
+          # config file.
+          # Prefix the list here with "+" to use these queries and those in the
+          # config file.
 
-        # For more details on CodeQL's query packs, refer to:
-        # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        # queries: security-extended,security-and-quality
+          # For more details on CodeQL's query packs, refer to:
+          # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
+          # queries: security-extended,security-and-quality
 
-    - name: Dependencies
-      run: |
-        sudo apt-get -qq update
-        sudo apt-get -qq install -y libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil lxrandr openssl curl libharfbuzz-dev pango1.0 xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy libxrandr2 build-essential gcc g++ python3-distutils pkg-config ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev clang libboost-dev libboost-filesystem1.74-dev libc6-dev-amd64-cross libgcc-s1-amd64-cross libtbb-dev libboost-thread1.74-dev pkgbinarymangler
-        sudo apt-get autoclean && sudo apt-get clean
-        if test -x "$(which snap)"; then \
-          sync && echo "attempting to use $(which snap) to install some wxwidgets-related things..."; \
-          sudo snap install wxdatecalc wxdatefrom; \
-        else \
-          sync && echo "skipping attempting to use snap to install anything"; \
-        fi
-        if test -x "$(which gem)"; then \
-          gem uninstall --all all 1>&2 || gem uninstall --all gem 1>&2 || gem uninstall --all bundler; \
-        else \
-          sync && echo "skipping cleaning up after rubygems"; \
-        fi
-        if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
-          brew uninstall all || brew uninstall brew || brew uninstall android || brew uninstall Homebrew || brew cleanup --prune=all -s --verbose || rm -rf "$(brew --cache)"; \
-        else \
-          sync && echo "skipping cleaning up after Homebrew"; \
-        fi
-        if test -d /usr/local/lib/android; then \
-          sync && echo "android takes up too much room; removing it..."; \
-          sudo rm -rf /usr/local/lib/android || sudo rmdir /usr/local/lib/android || stat -t /usr/local/lib/android; \
-        else \
-          sync && echo "skipping cleaning up after android"; \
-        fi
-        if test -d /usr/local/.ghcup; then \
-          sync && echo "ghcup takes up too much room; removing it..."; \
-          sudo rm -rf /usr/local/.ghcup || sudo rmdir /usr/local/.ghcup || stat -t /usr/local/.ghcup; \
-        else \
-          sync && echo "skipping cleaning up after ghcup"; \
-        fi
+      - name: Dependencies
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get -qq install -y libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 \
+            codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev \
+            libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev \
+            libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev \
+            libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev \
+            libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil \
+            lxrandr openssl curl libharfbuzz-dev pango1.0 \
+            xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper \
+            libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy \
+            libxrandr2 build-essential gcc g++ python3-distutils pkg-config \
+            ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev \
+            libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev \
+            libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev \
+            libibus-1.0-dev libcurl4-openssl-dev clang libboost-dev \
+            libboost-filesystem1.74-dev libc6-dev-amd64-cross \
+            libgcc-s1-amd64-cross libtbb-dev libboost-thread1.74-dev \
+            pkgbinarymangler
+          sudo apt-get autoclean && sudo apt-get clean
+          if test -x "$(which snap)"; then \
+            sync && \
+              echo "using $(which snap) to install wxwidgets-related things…"; \
+            sudo snap install wxdatecalc wxdatefrom; \
+          else \
+            sync && echo "skipping attempt to use snap to install anything"; \
+          fi
+          if test -x "$(which gem)"; then \
+            gem uninstall --all all 1>&2 || gem uninstall --all gem 1>&2 || \
+              gem uninstall --all bundler; \
+          else \
+            sync && echo "skipping cleaning up after rubygems"; \
+          fi
+          if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
+            brew uninstall all || brew uninstall brew || \
+              brew uninstall android || brew uninstall Homebrew || \
+              brew cleanup --prune=all -s --verbose || \
+              rm -rf "$(brew --cache)"; \
+          else \
+            sync && echo "skipping cleaning up after Homebrew"; \
+          fi
+          if test -d /usr/local/lib/android; then \
+            sync && echo "android takes up too much room; removing it..."; \
+            sudo rm -rf /usr/local/lib/android || \
+              sudo rmdir /usr/local/lib/android || \
+              stat -t /usr/local/lib/android; \
+          else \
+            sync && echo "skipping cleaning up after android"; \
+          fi
+          if test -d /usr/local/.ghcup; then \
+            sync && echo "ghcup takes up too much room; removing it..."; \
+            sudo rm -rf /usr/local/.ghcup || sudo rmdir /usr/local/.ghcup || \
+              stat -t /usr/local/.ghcup; \
+          else \
+            sync && echo "skipping cleaning up after ghcup"; \
+          fi
 
-    - name: Cache object files
-      id: vcpkg-cache
-      uses: actions/cache@v4
-      with:
-        path: vcpkg_installed  # vcpkg generates this dir next to vcpkg.json
-        # the final key part needs to be changed if anything in the build process changes that is not already included here
-        key: vcpkg-cache-master-${{ hashFiles('.github/workflows/codeql.yml') }}-${{ hashFiles('CMakeLists.txt') }}-0001
+      - name: Cache object files
+        id: vcpkg-cache
+        uses: actions/cache@v4
+        with:
+          path: vcpkg_installed  # vcpkg generates this dir next to vcpkg.json
+          # the final key part needs to be changed if anything in the build
+          # process changes that is not already included here
+          key: vcpkg-cache-master-${{ hashFiles('.github/workflows/codeql.yml') }}-${{ hashFiles('CMakeLists.txt') }}-0001
 
-    - name: More dependencies
-      run: |
-        git gc
-        vcpkg update
-        vcpkg x-ci-clean
-        vcpkg install boost-filesystem || vcpkg install vcpkg-cmake vcpkg-cmake-config vcpkg-cmake-get-vars vcpkg-boost
-        vcpkg install boost-thread || vcpkg install libgit2
-        vcpkg x-ci-clean
-      env:
-        VCPKG_FORCE_SYSTEM_BINARIES: 1
-        CMAKE_BUILD_TYPE: MinSizeRel
-        VCPKG_KEEP_ENV_VARS: CMAKE_BUILD_TYPE
-        MAYBE_UNUSED_VARIABLES: CMAKE_DISABLE_FIND_PACKAGE_ALSA
-        VERBOSE: ON
+      - name: More dependencies
+        run: |
+          git gc
+          vcpkg update
+          vcpkg x-ci-clean
+          vcpkg install boost-filesystem || vcpkg install vcpkg-cmake \
+            vcpkg-cmake-config vcpkg-cmake-get-vars vcpkg-boost
+          vcpkg install boost-thread || vcpkg install libgit2
+          vcpkg x-ci-clean
+        env:
+          VCPKG_FORCE_SYSTEM_BINARIES: 1
+          CMAKE_BUILD_TYPE: MinSizeRel
+          VCPKG_KEEP_ENV_VARS: CMAKE_BUILD_TYPE
+          MAYBE_UNUSED_VARIABLES: CMAKE_DISABLE_FIND_PACKAGE_ALSA
+          VERBOSE: ON
 
-    # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild 1 (gnu++98)
-      uses: github/codeql-action/autobuild@v3
-      env:
-        VCPKG_FEATURE_FLAGS: dependencygraph
-        CXXFLAGS: "-std=gnu++98 -fpermissive -Wno-write-strings -Wno-nonnull"
-        VERBOSE: ON
-        MAKEFLAGS: -ki
+      # Autobuild attempts to build any compiled languages
+      # (C/C++, C#, Go, Java, or Swift).
+      # If this step fails, then you should remove it and run the build manually
+      - name: Autobuild 1 (gnu++98)
+        uses: github/codeql-action/autobuild@v3
+        env:
+          VCPKG_FEATURE_FLAGS: dependencygraph
+          CXXFLAGS: "-std=gnu++98 -fpermissive -Wno-write-strings -Wno-nonnull"
+          VERBOSE: ON
+          MAKEFLAGS: -ki
 
-    - name: Autobuild 2 (gnu++11)
-      uses: github/codeql-action/autobuild@v3
-      env:
-        CXXFLAGS: "-std=gnu++11 -fpermissive -Wno-narrowing -Wno-nonnull"
-        VERBOSE: ON
-        MAKEFLAGS: -ki
+      - name: Autobuild 2 (gnu++11)
+        uses: github/codeql-action/autobuild@v3
+        env:
+          CXXFLAGS: "-std=gnu++11 -fpermissive -Wno-narrowing -Wno-nonnull"
+          VERBOSE: ON
+          MAKEFLAGS: -ki
 
-    - name: Autobuild 3 (gnu++14)
-      uses: github/codeql-action/autobuild@v3
-      env:
-        CXXFLAGS: "-std=gnu++14 -fpermissive -Wno-pedantic -Wno-nonnull"
-        VERBOSE: ON
-        MAKEFLAGS: -ki
+      - name: Autobuild 3 (gnu++14)
+        uses: github/codeql-action/autobuild@v3
+        env:
+          CXXFLAGS: "-std=gnu++14 -fpermissive -Wno-pedantic -Wno-nonnull"
+          VERBOSE: ON
+          MAKEFLAGS: -ki
 
-    - name: Autobuild 4 (clang, hopefully?)
-      uses: github/codeql-action/autobuild@v3
-      env:
-        CC: "clang"
-        CXX: "clang++"
-        OBJC: "clang"
-        OBJCXX: "clang++"
-        CLICOLOR: "yes"
-        VERBOSE: ON
-        MAKEFLAGS: -ki
+      - name: Autobuild 4 (clang, hopefully?)
+        uses: github/codeql-action/autobuild@v3
+        env:
+          CC: "clang"
+          CXX: "clang++"
+          OBJC: "clang"
+          OBJCXX: "clang++"
+          CLICOLOR: "yes"
+          VERBOSE: ON
+          MAKEFLAGS: -ki
 
-    # Command-line programs to run using the OS shell; see:
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+      - name: Debug failure
+        if: failure()
+        run: |
+          # shellcheck disable=SC2038
+          if test -d /usr/local/share/vcpkg/buildtrees/wxwidgets; then \
+            sync && echo "Seeing if wxwidgets had a build fail under vcpkg…"; \
+            find /usr/local/share/vcpkg/buildtrees/wxwidgets -name "*.log" | \
+              xargs cat | uniq; \
+            sync && echo "done with wxwidgets logs"; \
+          else \
+            sync && echo "skipping check for wxwidgets logs"; \
+          fi
+          if test -r CMakeFiles/CMakeOutput.log; then \
+            sync && echo "checking CMake output..."; \
+            cat CMakeFiles/CMakeOutput.log || stat CMakeFiles/CMakeOutput.log; \
+          else \
+            sync && echo "skipping check of CMake output..."; \
+          fi
+          if test -r CMakeFiles/CMakeError.log; then \
+            sync && echo "checking CMake errors..."; \
+            cat CMakeFiles/CMakeError.log || stat CMakeFiles/CMakeError.log; \
+          else \
+            sync && echo "skipping check of CMake errors..."; \
+          fi
+          sync && echo "checking what might be taking up a lot of disk space…"
+          (sync && du . && sync && df) || (du -d 1 -x / 2>/dev/null | sort -nr)
 
-    - name: Debug failure
-      if: failure()
-      run: |
-        # shellcheck disable=SC2038
-        if test -d /usr/local/share/vcpkg/buildtrees/wxwidgets; then \
-          sync && echo "Seeing if wxwidgets had a build failure under vcpkg..."; \
-          find /usr/local/share/vcpkg/buildtrees/wxwidgets -name "*.log" | xargs cat | uniq; \
-          sync && echo "done with wxwidgets logs"; \
-        else \
-          sync && echo "skipping check for wxwidgets logs"; \
-        fi
-        if test -r CMakeFiles/CMakeOutput.log; then \
-          sync && echo "checking CMake output..."; \
-          cat CMakeFiles/CMakeOutput.log || stat CMakeFiles/CMakeOutput.log; \
-        else \
-          sync && echo "skipping check of CMake output..."; \
-        fi
-        if test -r CMakeFiles/CMakeError.log; then \
-          sync && echo "checking CMake errors..."; \
-          cat CMakeFiles/CMakeError.log || stat CMakeFiles/CMakeError.log; \
-        else \
-          sync && echo "skipping check of CMake errors..."; \
-        fi
-        sync && echo "checking what might be taking up a lot of disk space..."
-        (sync && du . && sync && df) || (du -d 1 -x / 2>/dev/null | sort -nr)
-
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
