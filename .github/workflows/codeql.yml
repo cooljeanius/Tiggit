@@ -117,8 +117,9 @@ jobs:
           if test -x /home/linuxbrew/.linuxbrew/bin/brew; then \
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"; \
             sync && echo "attempting to clean up after Homebrew..."; \
-            brew uninstall all 2>/dev/null || brew uninstall brew 2>&1 || \
-              brew uninstall android 2>&1 || brew uninstall Homebrew 2>&1 || \
+            brew uninstall all 2>/dev/null || brew uninstall brew 2>/dev/null \
+              || brew uninstall android 2>/dev/null || \
+              brew uninstall Homebrew 2>/dev/null || \
               brew cleanup --prune=all -s --verbose 2>&1 || \
               rm -rf "$(brew --cache)" || echo "no Homebrew stuff to clean"; \
           else \
@@ -126,9 +127,9 @@ jobs:
           fi
           if test -d /usr/local/lib/android; then \
             sync && echo "android takes up too much room; removing it..."; \
-            time sudo rm -rf /usr/local/lib/android || \
-              sudo rmdir /usr/local/lib/android || \
-              stat -t /usr/local/lib/android; \
+            time (sudo rm -rf /usr/local/lib/android || \
+                    sudo rmdir /usr/local/lib/android || \
+                    stat -t /usr/local/lib/android); \
           else \
             sync && echo "skipping cleaning up after android"; \
           fi
@@ -147,6 +148,7 @@ jobs:
           path: |
             vcpkg_installed
             **/vcpkg_installed
+            /usr/local/share/vcpkg/buildtrees
           # the final key part needs to be changed if anything in the build
           # process changes that is not already included here
           key: vcpkg-cache-master-${{ hashFiles('.github/workflows/codeql.yml') }}-${{ hashFiles('CMakeLists.txt') }}-0001
@@ -164,6 +166,7 @@ jobs:
             vcpkg-cmake-config vcpkg-cmake-get-vars vcpkg-boost
           sync && echo "vcpkg install command 2 begins here"
           vcpkg install boost-thread || vcpkg install libgit2
+          sync && echo "now cleaning up after vcpkg"
           vcpkg x-ci-clean
         env:
           VCPKG_FORCE_SYSTEM_BINARIES: 1
