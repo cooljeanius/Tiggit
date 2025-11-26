@@ -78,8 +78,8 @@ jobs:
 
       - name: Dependencies (apt-get, snap)
         run: |
-          sudo apt-get -qq update
-          sudo apt-get -qq install -y libwxbase3.2-1t64 libwxgtk3.2-1t64 \
+          sudo apt-get update && echo "...and updated."
+          sudo apt-get install -y libwxbase3.2-1t64 libwxgtk3.2-1t64 \
             codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev \
             libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev \
             libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev \
