@@ -93,9 +93,13 @@ jobs:
             libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev \
             libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev \
             libegl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev clang \
-            libboost-dev libboost-filesystem1.74-dev libc6-dev-amd64-cross \
-            libgcc-s1-amd64-cross libtbb-dev libboost-thread1.74-dev \
+            libboost-dev libc6-dev-amd64-cross libgcc-s1-amd64-cross libtbb-dev \
             pkgbinarymangler
+          echo "attempting to handle boost version weirdness next"
+          sudo apt-get install -y --fix-missing libboost-filesystem1.74-dev || \
+            sudo apt-get install -y --fix-missing libboost-filesystem-dev
+          sudo apt-get install -y --fix-missing libboost-thread1.74-dev || \
+            sudo apt-get install -y --fix-missing libboost-thread-dev
           sudo apt-get autoclean && sudo apt-get clean
           if test -x "$(which snap)"; then \
             sync && \
