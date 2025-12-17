@@ -44,7 +44,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['c-cpp']
+        language: ['actions', 'c-cpp']
         # CodeQL supports the following languages:
         # 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript',
         # 'python', 'ruby'
@@ -182,24 +182,27 @@ jobs:
       # Autobuild attempts to build any compiled languages
       # (C/C++, C#, Go, Java, or Swift).
       # If this step fails, then you should remove it & run the build manually
-      - name: Autobuild 1 (gnu++98)
+      - name: Autobuild 1 (gnu99, gnu++98)
         uses: github/codeql-action/autobuild@v4
         env:
           VCPKG_FEATURE_FLAGS: dependencygraph
+          CFLAGS: "-std=gnu99"
           CXXFLAGS: "-std=gnu++98 -fpermissive -Wno-write-strings -Wno-nonnull"
           VERBOSE: ON
           MAKEFLAGS: -ki
 
-      - name: Autobuild 2 (gnu++11)
+      - name: Autobuild 2 (gnu11, gnu++11)
         uses: github/codeql-action/autobuild@v4
         env:
+          CFLAGS: "-std=gnu11"
           CXXFLAGS: "-std=gnu++11 -fpermissive -Wno-narrowing -Wno-nonnull"
           VERBOSE: ON
           MAKEFLAGS: -ki
 
-      - name: Autobuild 3 (gnu++14)
+      - name: Autobuild 3 (gnu17, gnu++14)
         uses: github/codeql-action/autobuild@v4
         env:
+          CFLAGS: "-std=gnu17"
           CXXFLAGS: "-std=gnu++14 -fpermissive -Wno-pedantic -Wno-nonnull"
           VERBOSE: ON
           MAKEFLAGS: -ki
@@ -211,6 +214,7 @@ jobs:
           CXX: "clang++"
           OBJC: "clang"
           OBJCXX: "clang++"
+          LDFLAGS: "-fuse-ld=lld"
           CLICOLOR: "yes"
           VERBOSE: ON
           MAKEFLAGS: -ki
