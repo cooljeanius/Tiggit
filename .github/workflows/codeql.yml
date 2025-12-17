@@ -94,7 +94,7 @@ jobs:
             libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev \
             libegl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev clang \
             libboost-dev libc6-dev-amd64-cross libgcc-s1-amd64-cross libtbb-dev \
-            pkgbinarymangler
+            pkgbinarymangler wx-common libwxsvg-dev libalien-wxwidgets-perl
           echo "attempting to handle boost version weirdness next"
           sudo apt-get install -y --fix-missing libboost-filesystem1.74-dev || \
             sudo apt-get install -y --fix-missing libboost-filesystem-dev
