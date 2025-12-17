@@ -102,8 +102,10 @@ jobs:
             sudo apt-get install -y --fix-missing libboost-thread1.74-dev || \
               sudo apt-get install -y --fix-missing libboost-thread-dev; \
             echo "...and done."; \
-          elif test ${{ matrix.language }} == 'actions'; then \ \
+          elif test ${{ matrix.language }} == 'actions'; then \
             sudo apt-get install -y --fix-missing actionlint || echo "nvm"; \
+          else \
+            echo "unhandled language ${{ matrix.language }} here"; \
           fi
           sudo apt-get autoclean && sudo apt-get clean
           if test -x "$(which snap)"; then \
