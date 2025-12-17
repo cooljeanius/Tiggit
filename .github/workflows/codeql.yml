@@ -56,7 +56,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
 
@@ -78,8 +78,8 @@ jobs:
 
       - name: Dependencies (apt-get, snap)
         run: |
-          sudo apt-get -qq update
-          sudo apt-get -qq install -y libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 \
+          sudo apt-get update && echo "...and updated."
+          sudo apt-get install -y libwxbase3.2-1t64 libwxgtk3.2-1t64 \
             codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev \
             libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev \
             libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev \
@@ -88,14 +88,18 @@ jobs:
             lxrandr openssl curl libharfbuzz-dev pango1.0 \
             xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper \
             libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy \
-            libxrandr2 build-essential gcc g++ python3-distutils pkg-config \
-            ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev \
-            libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev \
-            libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev \
-            libibus-1.0-dev libcurl4-openssl-dev clang libboost-dev \
-            libboost-filesystem1.74-dev libc6-dev-amd64-cross \
-            libgcc-s1-amd64-cross libtbb-dev libboost-thread1.74-dev \
-            pkgbinarymangler
+            libxrandr2 build-essential gcc g++ python3-distutils-extra \
+            pkg-config ninja-build bison gperf nasm libgl1-mesa-dev \
+            libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev \
+            libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev \
+            libegl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev clang \
+            libboost-dev libc6-dev-amd64-cross libgcc-s1-amd64-cross libtbb-dev \
+            pkgbinarymangler wx-common libwxsvg-dev libalien-wxwidgets-perl
+          echo "attempting to handle boost version weirdness next"
+          sudo apt-get install -y --fix-missing libboost-filesystem1.74-dev || \
+            sudo apt-get install -y --fix-missing libboost-filesystem-dev
+          sudo apt-get install -y --fix-missing libboost-thread1.74-dev || \
+            sudo apt-get install -y --fix-missing libboost-thread-dev
           sudo apt-get autoclean && sudo apt-get clean
           if test -x "$(which snap)"; then \
             sync && \
