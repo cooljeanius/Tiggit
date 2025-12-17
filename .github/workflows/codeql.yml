@@ -147,7 +147,7 @@ jobs:
 
       - name: Cache object files
         id: vcpkg-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             vcpkg_installed
