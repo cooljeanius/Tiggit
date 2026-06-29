@@ -156,7 +156,7 @@ jobs:
       - name: Cache object files
         if: matrix.language == 'c-cpp'
         id: vcpkg-cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             vcpkg_installed
