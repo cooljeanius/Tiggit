@@ -5,19 +5,19 @@ This is an alpha version of a new game installer / distribution /
 thingie I'm working on. It is released under the GNU General Public
 License v3.
 
-For more info, check out http://tiggit.net/ .
+For more info, check out <http://tiggit.net/>.
 
 
   NOTE: the current code tree is in a middle of a rewrite. Don't
   expect it to work. I will announce in the forums (found at
-  http://tiggit.net/forum ) and remove this message when the rewrite
+  <http://tiggit.net/forum>) and remove this message when the rewrite
   is done.
 
 
 
 BUILDING:
 
-Tiggit is known to build on Windows, Linux and FreeBSD, but is only
+Tiggit is known to build on Windows, Linux, and FreeBSD, but is only
 supported on Windows as of yet, and only lists Windows games.
 
 There are no particular build instructions here yet, but you should be
@@ -39,20 +39,20 @@ Git submodules:
 
 Submodules are installed automatically if you run:
 
-  git submodule update --init"
+  git submodule update --init
 
 
 
 HELPING OUT:
 
-If you want to improve tiggit, all help, suggestions and patches are
+If you want to improve tiggit, all help, suggestions, and patches are
 highly welcome and appreciated. You can post pull requests through
-github and I will usually respond to them fairly quickly.
+github, and I may or may not respond to them.
 
-To post suggestions and comments, send me a mail at:
+To post suggestions and comments, send me an email at:
 
   korslund@gmail.com
 
 or go to:
 
-  http://tiggit.net/forum
+  <http://tiggit.net/forum>

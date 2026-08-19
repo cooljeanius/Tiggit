@@ -44,7 +44,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['c-cpp']
+        language: ['actions', 'c-cpp']
         # CodeQL supports the following languages:
         # 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript',
         # 'python', 'ruby'
@@ -56,13 +56,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: true
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4.37.7
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a
@@ -78,24 +78,35 @@ jobs:
 
       - name: Dependencies (apt-get, snap)
         run: |
-          sudo apt-get -qq update
-          sudo apt-get -qq install -y libwxbase3.0-0v5 libwxgtk3.0-gtk3-0v5 \
-            codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev \
-            libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev \
-            libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev \
-            libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev \
-            libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil \
-            lxrandr openssl curl libharfbuzz-dev pango1.0 \
-            xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper \
-            libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy \
-            libxrandr2 build-essential gcc g++ python3-distutils pkg-config \
-            ninja-build bison gperf nasm libgl1-mesa-dev libglu1-mesa-dev \
-            libtool libudev-dev libx11-xcb-dev libxcursor-dev libxdamage-dev \
-            libxinerama-dev libxrandr-dev libwayland-dev libegl1-mesa-dev \
-            libibus-1.0-dev libcurl4-openssl-dev clang libboost-dev \
-            libboost-filesystem1.74-dev libc6-dev-amd64-cross \
-            libgcc-s1-amd64-cross libtbb-dev libboost-thread1.74-dev \
-            pkgbinarymangler
+          sudo apt-get update && echo "...and updated."
+          if test ${{ matrix.language }} == 'c-cpp'; then \
+            sudo apt-get install -y libwxbase3.2-1t64 libwxgtk3.2-1t64 \
+              codeblocks filezilla cmake libzzip-dev libdbus-1-dev libxi-dev \
+              libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev \
+              libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev \
+              libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev \
+              libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil \
+              lxrandr openssl curl libharfbuzz-dev pango1.0 \
+              xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper \
+              libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy \
+              libxrandr2 build-essential gcc g++ python3-distutils-extra \
+              pkg-config ninja-build bison gperf nasm libgl1-mesa-dev \
+              libglu1-mesa-dev libtool libudev-dev libx11-xcb-dev libxcursor-dev \
+              libxdamage-dev libxinerama-dev libxrandr-dev libwayland-dev \
+              libegl1-mesa-dev libibus-1.0-dev libcurl4-openssl-dev clang \
+              libboost-dev libc6-dev-amd64-cross libgcc-s1-amd64-cross libtbb-dev \
+              pkgbinarymangler wx-common libwxsvg-dev libalien-wxwidgets-perl; \
+            echo "attempting to handle boost version weirdness next"; \
+            sudo apt-get install -y --fix-missing libboost-filesystem1.74-dev || \
+              sudo apt-get install -y --fix-missing libboost-filesystem-dev; \
+            sudo apt-get install -y --fix-missing libboost-thread1.74-dev || \
+              sudo apt-get install -y --fix-missing libboost-thread-dev; \
+            echo "...and done."; \
+          elif test ${{ matrix.language }} == 'actions'; then \
+            sudo apt-get install -y --fix-missing actionlint || echo "nvm"; \
+          else \
+            echo "unhandled language ${{ matrix.language }} here"; \
+          fi
           sudo apt-get autoclean && sudo apt-get clean
           if test -x "$(which snap)"; then \
             sync && \
@@ -106,6 +117,7 @@ jobs:
           fi
 
       - name: Reclaim disk space by cleaning up unnecessary things
+        if: matrix.language == 'c-cpp'
         run: |
           if test -x "$(which gem)"; then \
             sync && echo "attempting to clean up after $(which gem)..."; \
@@ -142,8 +154,9 @@ jobs:
           fi
 
       - name: Cache object files
+        if: matrix.language == 'c-cpp'
         id: vcpkg-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             vcpkg_installed
@@ -157,6 +170,7 @@ jobs:
             vcpkg-cache-master--${{ hashFiles('CMakeLists.txt') }}-0001
 
       - name: More dependencies (vcpkg)
+        if: matrix.language == 'c-cpp'
         run: |
           git gc
           vcpkg update
@@ -165,7 +179,7 @@ jobs:
           vcpkg install boost-filesystem || vcpkg install vcpkg-cmake \
             vcpkg-cmake-config vcpkg-cmake-get-vars vcpkg-boost
           sync && echo "vcpkg install command 2 begins here"
-          vcpkg install boost-thread || vcpkg install libgit2
+          vcpkg install boost-thread || vcpkg install libgit2 || vcpkg list
           sync && echo "now cleaning up after vcpkg"
           vcpkg x-ci-clean
         env:
@@ -178,35 +192,43 @@ jobs:
       # Autobuild attempts to build any compiled languages
       # (C/C++, C#, Go, Java, or Swift).
       # If this step fails, then you should remove it & run the build manually
-      - name: Autobuild 1 (gnu++98)
-        uses: github/codeql-action/autobuild@v3
+      - name: Autobuild 1 (gnu99, gnu++98)
+        if: matrix.language == 'c-cpp'
+        uses: github/codeql-action/autobuild@v4.37.7
         env:
           VCPKG_FEATURE_FLAGS: dependencygraph
+          CFLAGS: "-std=gnu99"
           CXXFLAGS: "-std=gnu++98 -fpermissive -Wno-write-strings -Wno-nonnull"
           VERBOSE: ON
           MAKEFLAGS: -ki
 
-      - name: Autobuild 2 (gnu++11)
-        uses: github/codeql-action/autobuild@v3
+      - name: Autobuild 2 (gnu11, gnu++11)
+        if: matrix.language == 'c-cpp'
+        uses: github/codeql-action/autobuild@v4.37.7
         env:
+          CFLAGS: "-std=gnu11"
           CXXFLAGS: "-std=gnu++11 -fpermissive -Wno-narrowing -Wno-nonnull"
           VERBOSE: ON
           MAKEFLAGS: -ki
 
-      - name: Autobuild 3 (gnu++14)
-        uses: github/codeql-action/autobuild@v3
+      - name: Autobuild 3 (gnu17, gnu++14)
+        if: matrix.language == 'c-cpp'
+        uses: github/codeql-action/autobuild@v4.37.7
         env:
+          CFLAGS: "-std=gnu17"
           CXXFLAGS: "-std=gnu++14 -fpermissive -Wno-pedantic -Wno-nonnull"
           VERBOSE: ON
           MAKEFLAGS: -ki
 
       - name: Autobuild 4 (clang, hopefully?)
-        uses: github/codeql-action/autobuild@v3
+        if: matrix.language == 'c-cpp'
+        uses: github/codeql-action/autobuild@v4.37.7
         env:
           CC: "clang"
           CXX: "clang++"
           OBJC: "clang"
           OBJCXX: "clang++"
+          LDFLAGS: "-fuse-ld=lld"
           CLICOLOR: "yes"
           VERBOSE: ON
           MAKEFLAGS: -ki
@@ -239,6 +261,6 @@ jobs:
           (sync && du . && sync && df) || (du -d 1 -x / 2>/dev/null | sort -nr)
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4.37.7
         with:
           category: "/language:${{matrix.language}}"
