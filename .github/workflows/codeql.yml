@@ -179,7 +179,7 @@ jobs:
           vcpkg install boost-filesystem || vcpkg install vcpkg-cmake \
             vcpkg-cmake-config vcpkg-cmake-get-vars vcpkg-boost
           sync && echo "vcpkg install command 2 begins here"
-          vcpkg install boost-thread || vcpkg install libgit2
+          vcpkg install boost-thread || vcpkg install libgit2 || vcpkg list
           sync && echo "now cleaning up after vcpkg"
           vcpkg x-ci-clean
         env:
