@@ -85,7 +85,7 @@ jobs:
               libxtst-dev linux-libc-dev libx11-dev libxft-dev libxext-dev \
               libgles2-mesa-dev gtk+3.0 x11-xserver-utils libxkbcommon-dev \
               libxkbcommon0 libxkbcommon-x11-0 libxkbcommon-x11-dev \
-              libxkbcommon-tools gettext cairo-5c libcairo-5c0 libcairo1.10-cil \
+              libxkbcommon-tools gettext cairo-5c libcairo-5c0 \
               lxrandr openssl curl libharfbuzz-dev pango1.0 \
               xdg-desktop-portal-gnome xinput xserver-xorg-video-r128 debhelper \
               libglib2.0-dev xserver-xorg xserver-xorg-core xserver-xorg-legacy \
